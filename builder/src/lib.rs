@@ -85,16 +85,16 @@ pub fn derive(input: TokenStream) -> TokenStream {
             // still generate the methods for the builder struct
             if let Some(inner_type) = parse_inner_type(&field_type, "Option") {
                 let method = quote! {
-                    pub fn #ident(&mut self, #ident: #inner_type) -> &mut #builder_name {
-                        self.#ident = std::option::Option::Some(#ident);
+                    pub fn #ident(&mut self, #ident: #inner_type) -> &mut Self {
+                        self.#ident = Some(#ident);
                         self
                     }
                 };
                 struct_builder_methods.push(method);
             } else {
                 let method = quote! {
-                    pub fn #ident(&mut self, #ident: #field_type) -> &mut #builder_name {
-                        self.#ident = std::option::Option::Some(#ident);
+                    pub fn #ident(&mut self, #ident: #field_type) -> &mut Self {
+                        self.#ident = Some(#ident);
                         self
                     }
                 };
@@ -122,8 +122,8 @@ pub fn derive(input: TokenStream) -> TokenStream {
                 if let Some(inner_type) = parse_inner_type(&field_type, "Option") {
                     if generate_all_in_one {
                         let method = quote! {
-                            pub fn #ident(&mut self, #ident: #inner_type) -> &mut #builder_name {
-                                self.#ident = std::option::Option::Some(#ident);
+                            pub fn #ident(&mut self, #ident: #inner_type) -> &mut Self {
+                                self.#ident = Some(#ident);
                                 self
                             }
                         };
@@ -132,7 +132,7 @@ pub fn derive(input: TokenStream) -> TokenStream {
 
                     if let Some(inner_type) = parse_inner_type(&inner_type, "Vec") {
                         let method = quote! {
-                            pub fn #new_ident(&mut self, #ident: #inner_type) -> &mut #builder_name {
+                            pub fn #new_ident(&mut self, #ident: #inner_type) -> &mut Self {
                                 match self.#ident {
                                     Some(ref mut inner) => inner.push(#ident),
                                     None => self.#ident = Some(vec![#ident]),
@@ -145,8 +145,8 @@ pub fn derive(input: TokenStream) -> TokenStream {
                 } else {
                     if generate_all_in_one {
                         let method = quote! {
-                            pub fn #ident(&mut self, #ident: #field_type) -> &mut #builder_name {
-                                self.#ident = std::option::Option::Some(#ident);
+                            pub fn #ident(&mut self, #ident: #field_type) -> &mut Self {
+                                self.#ident = Some(#ident);
                                 self
                             }
                         };
@@ -154,7 +154,7 @@ pub fn derive(input: TokenStream) -> TokenStream {
                     }
                     if let Some(inner_type) = parse_inner_type(&field_type, "Vec") {
                         let method = quote! {
-                            pub fn #new_ident(&mut self, #ident: #inner_type) -> &mut #builder_name {
+                            pub fn #new_ident(&mut self, #ident: #inner_type) -> &mut Self {
                                 match self.#ident {
                                     Some(ref mut inner) => inner.push(#ident),
                                     None => self.#ident = Some(vec![#ident]),
